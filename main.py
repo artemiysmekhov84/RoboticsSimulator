@@ -1,3 +1,4 @@
+import datetime
 import threading
 import numpy
 import cv2
@@ -44,6 +45,11 @@ def getFrame():
                 pybullet.stepSimulation()
             images = pybullet.getCameraImage(frameSize[0], frameSize[1], viewMatrix)
             frame = numpy.reshape(images[2], (*frameSize, 4))[:, :, 2::-1]  # Invert channels order.
+            frame = cv2.normalize(frame, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+
+            timeString = str(datetime.datetime.now())
+            frame = cv2.putText(frame, timeString, (5, 15), cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255))
+
             isEncoded, encodedFrame = cv2.imencode(".jpg", frame)  # Encode the frame in JPEG format.
             if not isEncoded:
                 continue
