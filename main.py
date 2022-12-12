@@ -8,11 +8,12 @@ from flask.wrappers import Response
 
 # Setup parameters.
 host = "192.168.0.102"  # IP-address of the streaming server.
-port = 8000  # Port number of the streaming server.
+port = 8080  # Port number of the streaming server.
 frameSize = (256, 256)  # Resolution of the syntheric camera.
 useRealTimeSimulation = True  # Indicates to call `stepSimulation()` method automatically as fast as possible.
 
 app = Flask(__name__)
+app.secret_key = "131200e9e5bc8f3f2a5b88d844f5ea45820da7cb0e026b5b56bc2e61dc7cfb8b"
 
 # Initialize a lock used to ensure thread-safe exchanges of the frames. It's required to support multiple clients.
 lock = threading.Lock()
@@ -49,6 +50,11 @@ def getFrame():
 
         # Yield the output frame in the byte format.
         yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + bytearray(encodedFrame) + b"\r\n")
+
+
+# waitress-serve --host='192.168.0.102' --call 'main:flaskApp'
+def flaskApp():
+    return app
 
 
 if __name__ == "__main__":
