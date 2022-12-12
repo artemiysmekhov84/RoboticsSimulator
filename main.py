@@ -19,7 +19,7 @@ app.secret_key = "131200e9e5bc8f3f2a5b88d844f5ea45820da7cb0e026b5b56bc2e61dc7cfb
 lock = threading.Lock()
 
 # Initialize pybullet environment.
-pybullet.connect(pybullet.GUI)  # GUI/DIRECT
+pybullet.connect(pybullet.DIRECT)  # GUI/DIRECT
 pybullet.setAdditionalSearchPath(pybullet_data.getDataPath())
 pybullet.setGravity(0.0, 0.0, -10.0)
 pybullet.setRealTimeSimulation(useRealTimeSimulation)
