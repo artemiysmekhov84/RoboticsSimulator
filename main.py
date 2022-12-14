@@ -22,22 +22,24 @@ pybullet.setRealTimeSimulation(useRealTimeSimulation)
 pybullet.loadURDF("plane.urdf")
 
 # TODO: Do I need this debug visualizer configuration? Seems it has no effect on performance.
-pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
-pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
-pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)
-pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)
+# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
+# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
+# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)
+# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)
 
-# Create robot and camera position matrix.
+# Create robot and compute camera matrices.
 robotPosition = (0.0, 0.0, 1.0)
 robotOrientation = pybullet.getQuaternionFromEuler((0.0, 0.0, 0.0))
 robot = pybullet.loadURDF("r2d2.urdf", robotPosition, robotOrientation)
 viewMatrix = pybullet.computeViewMatrix(
     cameraEyePosition=(2.0, 2.0, 2.0), cameraTargetPosition=(0.0, 0.0, 0.0), cameraUpVector=(0.0, 0.0, 1.0)
 )
+projectionMatrix = pybullet.computeProjectionMatrixFOV(
+    fov=60.0, aspect=frameSize[0] / frameSize[1], nearVal=0.1, farVal=10.0
+)
 
 # Create Flask app.
 app = flask.Flask(__name__)
-# app.secret_key = "131200e9e5bc8f3f2a5b88d844f5ea45820da7cb0e026b5b56bc2e61dc7cfb8b"  # TODO: Do I need this?
 
 
 @app.route("/stream", methods=["GET"])
@@ -61,6 +63,7 @@ def captureFrame():
         width=frameSize[0],
         height=frameSize[1],
         viewMatrix=viewMatrix,
+        projectionMatrix=projectionMatrix,
         shadow=False,
         renderer=pybullet.ER_TINY_RENDERER,  # ER_TINY_RENDERER/ER_BULLET_HARDWARE_OPENGL
     )
