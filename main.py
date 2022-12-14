@@ -20,12 +20,10 @@ pybullet.setAdditionalSearchPath(pybullet_data.getDataPath())
 pybullet.setGravity(0.0, 0.0, -10.0)
 pybullet.setRealTimeSimulation(useRealTimeSimulation)
 pybullet.loadURDF("plane.urdf")
-
-# TODO: Do I need this debug visualizer configuration? Seems it has no effect on performance.
-# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
-# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
-# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)
-# pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)
+pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
+pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RGB_BUFFER_PREVIEW, 0)
+pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0)
+pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
 
 # Create robot and compute camera matrices.
 robotPosition = (0.0, 0.0, 1.0)
@@ -65,7 +63,7 @@ def captureFrame():
         viewMatrix=viewMatrix,
         projectionMatrix=projectionMatrix,
         shadow=False,
-        renderer=pybullet.ER_TINY_RENDERER,  # ER_TINY_RENDERER/ER_BULLET_HARDWARE_OPENGL
+        renderer=pybullet.ER_BULLET_HARDWARE_OPENGL,  # ER_TINY_RENDERER/ER_BULLET_HARDWARE_OPENGL
     )
     frame = numpy.reshape(image, (frameSize[1], frameSize[0], 4))[:, :, 2::-1]  # Invert channels order.
     frame = cv2.normalize(frame, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
