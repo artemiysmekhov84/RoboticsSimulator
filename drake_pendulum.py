@@ -7,7 +7,7 @@ from pydrake.systems.framework import DiagramBuilder
 
 # TODO: Add tkinter to requirements.txt. Remove it from deployment step in Railway.
 
-p = MeshcatParams(host="0.0.0.0", port=7000)
+p = MeshcatParams(host="0.0.0.0", port=8080)
 meshcat = Meshcat(p)  # type: ignore
 
 # def model_inspector(filename):
