@@ -1,15 +1,5 @@
-import numpy as np
-import os
-
-from pydrake.common import FindResourceOrThrow, temp_directory
-from pydrake.geometry import (
-    MeshcatVisualizer,
-    MeshcatVisualizerParams,
-    Role,
-    StartMeshcat,
-)
-from pydrake.math import RigidTransform, RollPitchYaw
-from pydrake.multibody.meshcat import JointSliders
+import numpy
+from pydrake.geometry import MeshcatVisualizer, MeshcatVisualizerParams, Role, StartMeshcat
 from pydrake.multibody.parsing import Parser
 from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
 from pydrake.systems.analysis import Simulator
@@ -22,16 +12,13 @@ meshcat = StartMeshcat()  # type: ignore
 #     meshcat.Delete()
 #     meshcat.DeleteAddedControls()
 #     builder = DiagramBuilder()
-
 #     # Note: Setting time_step ~= 0.0 tells the constructor
 #     # that this system is a discrete system
 #     plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.001)  # type: ignore
-
 #     # Load the file into the plant/scene_graph.
 #     parser = Parser(plant)
 #     parser.AddModelFromFile(filename)
 #     plant.Finalize()
-
 #     # Add two visualizers, one to publish the "visual" geometry, and one to
 #     # publish the "collision" geometry.
 #     visual = MeshcatVisualizer.AddToBuilder(builder, scene_graph, meshcat, MeshcatVisualizerParams(role=Role.kPerception, prefix="visual"))  # type: ignore
@@ -39,7 +26,6 @@ meshcat = StartMeshcat()  # type: ignore
 #     # Disable the collision geometry at the start; it can be enabled by the
 #     # checkbox in the meshcat controls.
 #     meshcat.SetProperty("collision", "visible", False)
-
 #     # Set the timeout to a small number in test mode. Otherwise, JointSliders
 #     # will run until "Stop JointSliders" button is clicked.
 #     default_interactive_timeout = 1.0 if "TEST_SRCDIR" in os.environ else None
@@ -73,9 +59,9 @@ def create_scene(sim_time_step=0.0001):
 
     # Set Initial Position of Joints:
     joint_0 = plant.GetJointByName("joint_0")
-    joint_0.set_default_angle(np.pi / 2)
+    joint_0.set_default_angle(numpy.pi / 2.0)
     joint_1 = plant.GetJointByName("joint_1")
-    joint_1.set_default_angle(np.pi / 2)
+    joint_1.set_default_angle(numpy.pi / 2.0)
 
     context = plant.CreateDefaultContext()
 
@@ -100,7 +86,7 @@ def run_simulation(sim_time_step):
     # Set input ports to be zero:
     plant_context = diagram.GetMutableSubsystemContext(plant, simulator.get_mutable_context())
     plant.get_actuation_input_port().FixValue(plant_context, np.zeros(plant.num_actuators()))  # type: ignore
-    simulator.AdvanceTo(np.inf)
+    simulator.AdvanceTo(numpy.inf)
     visualizer.PublishRecording()
 
 
