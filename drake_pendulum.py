@@ -7,7 +7,7 @@ from pydrake.systems.framework import DiagramBuilder
 
 # TODO: Add tkinter to requirements.txt. Remove it from deployment step in Railway.
 
-p = MeshcatParams(port=8080)
+p = MeshcatParams(host="*", port=8080, web_url_pattern="http://{host}:{port}", show_stats_plot=False)
 meshcat = Meshcat(p)  # type: ignore
 
 # def model_inspector(filename):
@@ -83,7 +83,7 @@ def initialize_simulation(diagram):
 
 
 def run_simulation(sim_time_step):
-    diagram, visualizer, plant, context = create_scene(sim_time_step)
+    diagram, visualizer, plant, context = create_scene(sim_time_step)  # type: ignore
     simulator = initialize_simulation(diagram)
     visualizer.StartRecording()
     # Set input ports to be zero:
