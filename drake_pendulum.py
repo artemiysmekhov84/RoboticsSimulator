@@ -1,12 +1,14 @@
 import numpy
-from pydrake.geometry import MeshcatVisualizer, MeshcatVisualizerParams, Role, StartMeshcat
+from pydrake.geometry import MeshcatVisualizer, MeshcatVisualizerParams, Role, MeshcatParams, Meshcat
 from pydrake.multibody.parsing import Parser
 from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import DiagramBuilder
 
-meshcat = StartMeshcat()  # type: ignore
+# TODO: Add tkinter to requirements.txt. Remove it from deployment step in Railway.
 
+p = MeshcatParams(host="0.0.0.0", port=7000)
+meshcat = Meshcat(p)  # type: ignore
 
 # def model_inspector(filename):
 #     meshcat.Delete()
@@ -66,7 +68,8 @@ def create_scene(sim_time_step=0.0001):
     context = plant.CreateDefaultContext()
 
     # Add visualizer to visualize the geometries.
-    visualizer = MeshcatVisualizer.AddToBuilder(builder, scene_graph, meshcat, MeshcatVisualizerParams(role=Role.kPerception, prefix="visual"))  # type: ignore
+    params = MeshcatVisualizerParams(role=Role.kPerception, prefix="visual")
+    visualizer = MeshcatVisualizer.AddToBuilder(builder, scene_graph, meshcat, params)  # type: ignore
 
     diagram = builder.Build()
     return diagram, visualizer, plant, context
@@ -85,10 +88,10 @@ def run_simulation(sim_time_step):
     visualizer.StartRecording()
     # Set input ports to be zero:
     plant_context = diagram.GetMutableSubsystemContext(plant, simulator.get_mutable_context())
-    plant.get_actuation_input_port().FixValue(plant_context, np.zeros(plant.num_actuators()))  # type: ignore
+    plant.get_actuation_input_port().FixValue(plant_context, numpy.zeros(plant.num_actuators()))  # type: ignore
     simulator.AdvanceTo(numpy.inf)
     visualizer.PublishRecording()
 
 
-# Run the simulation:
+# Run the simulation at localhost:7000.
 run_simulation(sim_time_step=0.0001)
