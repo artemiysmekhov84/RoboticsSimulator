@@ -130,3 +130,6 @@ dmypy.json
 
 # Visual Studio Code
 .vscode/
+
+# Other files to not be synched with Git
+.ignored/

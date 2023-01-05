@@ -1,6 +1,1 @@
-wheel==0.38.4
-numpy==1.23.5
-opencv-python-headless==4.6.0.66
-pybullet==3.2.5
-flask==2.2.2
-waitress==2.1.2
+drake==1.11.0
