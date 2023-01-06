@@ -9,6 +9,8 @@ from pydrake.systems.framework import DiagramBuilder
 # TODO: Try to ask a questions on Drake/Meshcat/Railway forums.
 # TODO: Add 'reset' endpoint.
 
+print("DRAKE PENDULUM UP AND RUNNING")
+
 builder = DiagramBuilder()
 plant, sceneGraph = AddMultibodyPlantSceneGraph(builder, time_step=0.001)  # type: ignore
 Parser(plant).AddModelFromFile("./pendulum.sdf")  # Load model.
