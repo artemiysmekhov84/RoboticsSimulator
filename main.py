@@ -2,6 +2,8 @@
 # This is why deploy crashes on run with error "ImportError: libX11.so.6: cannot open shared object file".
 # Need to make Docker container including all required dependencies and push it to Git repository.
 # Required dependency list: libx11-6 libsm6 libglib2.0-0 [python-tk].
+# Google for "putting X11 into a docker container", "install python drake into docker".
+# apt-get update -y && apt-get upgrade -y && apt-get install -y --no-install-recommends xvfb xpra xserver-xephyr xinit xauth xclip x11-xserver-utils x11-utils libx11-6 libsm6 libglib2.0-0 python-tk
 
 # TODO: Add 'reset' endpoint.
 
