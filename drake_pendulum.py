@@ -1,5 +1,5 @@
 import numpy
-from pydrake.geometry import Meshcat, MeshcatVisualizer
+from pydrake.geometry import Meshcat, MeshcatVisualizer, MeshcatParams
 from pydrake.multibody.parsing import Parser
 from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
 from pydrake.systems.analysis import Simulator
@@ -20,7 +20,8 @@ plant.GetJointByName("joint_0").set_default_angle(numpy.pi / 2.0)
 plant.GetJointByName("joint_1").set_default_angle(numpy.pi / 2.0)
 
 # Add visualizer to visualize the geometries.
-meshcat = Meshcat(port=8000)
+params = MeshcatParams(host="0.0.0.0", port=8000, web_url_pattern="https://{host}:{port}")
+meshcat = Meshcat(params)
 MeshcatVisualizer.AddToBuilder(builder, sceneGraph, meshcat)  # type: ignore
 
 diagram = builder.Build()
