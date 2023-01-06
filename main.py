@@ -1,18 +1,26 @@
-# TODO: Seems that problem with tkinter. Deploy crashed but Railway informs that it was OK.
-# TODO: Try to use another hosting.
-# TODO: Try to ask a questions on Drake/Meshcat/Railway forums.
+# TODO: Seems like all OS-level dependensies installed locally are not including into the final Docker image.
+# This is why deploy crashes on run with error "ImportError: libX11.so.6: cannot open shared object file".
+# Need to make Docker container including all required dependencies and push it to Git repository.
+# Required dependency list: libx11-6 libsm6 libglib2.0-0 [python-tk].
+
 # TODO: Add 'reset' endpoint.
 
-print("DRAKE PENDULUM BEFORE IMPORTS")
+import subprocess
+
+print("========== CHECK IF libx11 IS INSTALLED ==========")
+subprocess.call("apt list --installed | grep libx11", shell=True)
 
 import numpy
+
+print("========== BEFORE IMPORT DRAKE ==========")
+
 from pydrake.geometry import Meshcat, MeshcatVisualizer, MeshcatParams
 from pydrake.multibody.parsing import Parser
 from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import DiagramBuilder
 
-print("DRAKE PENDULUM AFTER IMPORTS")
+print("========== AFTER IMPORT DRAKE ==========")
 
 builder = DiagramBuilder()
 plant, sceneGraph = AddMultibodyPlantSceneGraph(builder, time_step=0.001)  # type: ignore
