@@ -1,3 +1,10 @@
+# TODO: Seems that problem with tkinter. Deploy crashed but Railway informs that it was OK.
+# TODO: Try to use another hosting.
+# TODO: Try to ask a questions on Drake/Meshcat/Railway forums.
+# TODO: Add 'reset' endpoint.
+
+print("DRAKE PENDULUM BEFORE IMPORTS")
+
 import numpy
 from pydrake.geometry import Meshcat, MeshcatVisualizer, MeshcatParams
 from pydrake.multibody.parsing import Parser
@@ -5,11 +12,7 @@ from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import DiagramBuilder
 
-# TODO: Try to use another hosting.
-# TODO: Try to ask a questions on Drake/Meshcat/Railway forums.
-# TODO: Add 'reset' endpoint.
-
-print("DRAKE PENDULUM UP AND RUNNING")
+print("DRAKE PENDULUM AFTER IMPORTS")
 
 builder = DiagramBuilder()
 plant, sceneGraph = AddMultibodyPlantSceneGraph(builder, time_step=0.001)  # type: ignore
