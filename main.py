@@ -1,30 +1,53 @@
-# TODO: Add "Reset" button.
+# TODO: Remove all default UI controls.
+# TODO: Need to figure out how does all these classes and methods work.
 
+import time
 import numpy
-from pydrake.geometry import Meshcat, MeshcatVisualizer
-from pydrake.multibody.parsing import Parser
-from pydrake.multibody.plant import AddMultibodyPlantSceneGraph
-from pydrake.systems.analysis import Simulator
-from pydrake.systems.framework import DiagramBuilder
+import pydrake.geometry
+import pydrake.multibody.plant
+import pydrake.multibody.parsing
+import pydrake.systems.analysis
+import pydrake.systems.framework
 
-builder = DiagramBuilder()
-plant, sceneGraph = AddMultibodyPlantSceneGraph(builder, time_step=0.001)  # type: ignore
-Parser(plant).AddModelFromFile("./pendulum.sdf")  # Load model.
-plant.mutable_gravity_field().set_gravity_vector([0.0, 0.0, -9.8])  # Add gravity.
-plant.Finalize()
 
-# Set initial position of joints.
-plant.GetJointByName("joint_0").set_default_angle(numpy.pi / 2.0)
-plant.GetJointByName("joint_1").set_default_angle(numpy.pi / 2.0)
+class DoublePendulum:
+    meshcat: pydrake.geometry.Meshcat
+    simulator: pydrake.systems.analysis.Simulator
+    timeStep: float
 
-# Add visualizer to visualize the geometries.
-meshcat = Meshcat()
-MeshcatVisualizer.AddToBuilder(builder, sceneGraph, meshcat)  # type: ignore
+    def __init__(self):
+        self.meshcat = pydrake.geometry.Meshcat()
+        self.meshcat.AddButton("RESET", "KeyR")
+        self.timeStep = 0.001
+        self.reset()
 
-diagram = builder.Build()
-simulator = Simulator(diagram)
-simulator.Initialize()
-simulator.set_target_realtime_rate(1.0)
-plantContext = diagram.GetMutableSubsystemContext(plant, simulator.get_mutable_context())
-plant.get_actuation_input_port().FixValue(plantContext, numpy.zeros(plant.num_actuators()))
-simulator.AdvanceTo(numpy.inf)
+    def reset(self):
+        builder = pydrake.systems.framework.DiagramBuilder()
+        plant, sceneGraph = pydrake.multibody.plant.AddMultibodyPlantSceneGraph(builder, time_step=self.timeStep)  # type: ignore
+        pydrake.geometry.MeshcatVisualizer.AddToBuilder(builder, sceneGraph, self.meshcat)  # type: ignore
+        diagram = builder.Build()
+        pydrake.multibody.parsing.Parser(plant).AddModelFromFile("./double_pendulum.sdf")  # Load model.
+        plant.mutable_gravity_field().set_gravity_vector([0.0, 0.0, -9.8])  # Add gravity.
+        plant.GetJointByName("joint_0").set_default_angle(numpy.pi / 2.0)
+        plant.GetJointByName("joint_1").set_default_angle(numpy.pi / 2.0)
+        plant.Finalize()
+        self.simulator = pydrake.systems.analysis.Simulator(diagram)
+        self.simulator.Initialize()
+        self.simulator.set_target_realtime_rate(1.0)
+        plantContext = diagram.GetMutableSubsystemContext(plant, self.simulator.get_mutable_context())
+        plant.get_actuation_input_port().FixValue(plantContext, numpy.zeros(plant.num_actuators()))
+
+    def run(self):
+        resetButtonClicksNumber = 0
+        while True:
+            if self.meshcat.GetButtonClicks("RESET") != resetButtonClicksNumber:
+                resetButtonClicksNumber = self.meshcat.GetButtonClicks("RESET")
+                self.reset()
+
+            self.simulator.AdvanceTo(self.simulator.get_context().get_time() + self.timeStep)
+            time.sleep(self.timeStep)
+
+
+if __name__ == "__main__":
+    doublePendulum = DoublePendulum()
+    doublePendulum.run()

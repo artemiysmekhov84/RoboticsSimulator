@@ -2,6 +2,6 @@
 FROM robotlocomotion/drake:1.11.0
 
 ADD main.py .
-ADD pendulum.sdf .
+ADD double_pendulum.sdf .
 
 CMD [ "python", "./main.py" ]
